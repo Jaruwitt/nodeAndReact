@@ -15,14 +15,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/get", (req,res) => {
+app.get("/api/movies", (req,res) => {
     const sql = "select * from MOVIE";
     db.query(sql, (err, result) => {
         res.send(result);
     }); 
 })
 
-app.post("/api/insert", (req,res) => {
+app.post("/api/movies", (req,res) => {
 
     const movieName = req.body.name;
     const movieReview = req.body.review;
@@ -32,7 +32,7 @@ app.post("/api/insert", (req,res) => {
     });
 })
 
-app.put("/api/update/:id", (req,res) => {
+app.put("/api/movies/:id", (req,res) => {
 
     const id = req.params.id;
     const movieReview = req.body.review;
@@ -45,7 +45,7 @@ app.put("/api/update/:id", (req,res) => {
     });
 })
 
-app.delete("/api/delete/:id", (req,res) => {
+app.delete("/api/movies/:id", (req,res) => {
     const id = req.params.id;
     const sql = "delete from MOVIE where ID = ?";
     db.query(sql, [id], (err, result) => {
