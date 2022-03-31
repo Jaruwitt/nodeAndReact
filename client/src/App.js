@@ -5,8 +5,9 @@ import Axios from 'axios';
 function App() {
 
   const [movieName, setMovieName] = useState('');
-  const [review, setReview] = useState('');
+  const [movieReview, setReview] = useState('');
   const [movieReviewList, setMovieReviewList] = useState([]);
+  const [newReview, setNewReview] = useState('');
 
   useEffect(() => {
     Axios.get('http://localhost:3001/api/get').then((res) => {
@@ -14,13 +15,28 @@ function App() {
     });
   }, []);
 
-  const submitReview = () => {
+  const create = () => {
     Axios.post('http://localhost:3001/api/insert', {
-      movieName: movieName,
-      movieReview: review
-    }).then(() => {
-      alert("successful insert");
+      name: movieName,
+      review: movieReview
     });
+
+    setMovieReviewList([...movieReviewList, {
+      NAME: movieName,
+      REVIEW: movieReview
+    },]);
+
+  };
+
+  const update = (movieId) => {
+    Axios.put(`http://localhost:3001/api/update/${movieId}`, {
+      review: newReview
+    });
+    setNewReview('');
+  };
+
+  const deleteReview = (movieId) => {
+    Axios.delete(`http://localhost:3001/api/delete/${movieId}`);
   };
 
   return (
@@ -33,16 +49,26 @@ function App() {
           setMovieName(e.target.value)
         }} />
         <label>Review:</label>
-        <input type="text" name="review" onChange={(e) => {
+        <input type="text" name="movieReview" onChange={(e) => {
           setReview(e.target.value)
         }}/>
         
-        <button onClick={submitReview}>Submit</button>
+        <button onClick={create}>Submit</button>
 
         {movieReviewList.map((val) => {
-          return <h1>MovieName: {val.NAME} | MovieReview: {val.REVIEW}</h1>
-        })}
+          return (
+            <div className="card">
+              <h1>{val.NAME}</h1>
+              <p>{val.REVIEW}</p>
 
+              <button onClick={() => deleteReview(val.ID)}>Delete</button>
+              <input type="text" id="updateButton" onChange={(e) => {
+                setNewReview(e.target.value)
+              }}/>
+              <button onClick={() => update(val.ID)}>Update</button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

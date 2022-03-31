@@ -24,14 +24,36 @@ app.get("/api/get", (req,res) => {
 
 app.post("/api/insert", (req,res) => {
 
-    const movieName = req.body.movieName;
-    const movieReview = req.body.movieReview;
-
+    const movieName = req.body.name;
+    const movieReview = req.body.review;
     const sql = "insert into MOVIE(NAME,REVIEW) values (?,?)";
     db.query(sql, [movieName, movieReview], (err, result) => {
         res.send("Insert Success");
     });
-    
+})
+
+app.put("/api/update/:id", (req,res) => {
+
+    const id = req.params.id;
+    const movieReview = req.body.review;
+    const sql = "update MOVIE set REVIEW = ? where ID = ?";
+    db.query(sql, [movieReview, id], (err, result) => {
+        if (err) {
+            console.error(err);
+        } else 
+            res.send(result);
+    });
+})
+
+app.delete("/api/delete/:id", (req,res) => {
+    const id = req.params.id;
+    const sql = "delete from MOVIE where ID = ?";
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error(err);
+        } else 
+            res.send("Delete Success");
+    });
 })
 
 app.listen(3001, () => {
